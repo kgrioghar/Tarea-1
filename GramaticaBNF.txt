@@ -1,0 +1,47 @@
+program --> statement+
+
+statement --> assignment | control-flow | function-call | declaration
+
+assignment --> identifier "=" expression
+
+control-flow --> if-statement | while-loop
+
+if-statement --> "if" "(" <expression> ")" block [ "else" block ]
+
+while-loop --> "while" "(" expression ")" block
+
+function-call --> identifier "(" [ arguments ] ")"
+
+declaration --> type identifier [ "=" expression ]
+
+block --> "{" statement+ "}"
+
+expression --> term { additive-operator term }
+
+term --> factor { multiplicative-operator factor }
+
+factor --> literal | identifier | "(" expression ")" | unary-operator factor
+
+arguments --> expression { "," expression }
+
+literal --> number | string | boolean
+
+identifier --> letter { letter | digit | "_" }
+
+number --> digit+
+
+string --> "\"" character* "\""
+
+boolean --> "true" | "false"
+
+letter --> "a" | "b" | ... | "z" | "A" | "B" | ... | "Z"
+
+digit --> "0" | "1" | ... | "9"
+
+additive-operator --> "+" | "-"
+
+multiplicative-operator --> "*" | "/"
+
+unary-operator --> "+" | "-" | "!" 
+
+type --> "int" | "float" | "char" | "bool"
