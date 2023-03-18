@@ -1,47 +1,87 @@
-program --> statement+
+program --> function-declaration | statement
 
-statement --> assignment | control-flow | function-call | declaration
+block --> '{' statement-list '}'
 
-assignment --> identifier "=" expression
+statement-list --> statement | statement statement-list
 
-control-flow --> if-statement | while-loop
+statement --> block | variable-declaration ';' | assignment ';' | function-call ';' | return-statement ';' | if-statement | while-statement | do-while-statement | for-statement
 
-if-statement --> "if" "(" <expression> ")" block [ "else" block ]
+variable-declaration --> type identifier | type identifier '=' expression | type identifier '[' integer-constant ']' | type identifier '[' integer-constant ']' '=' array-initialization
 
-while-loop --> "while" "(" expression ")" block
+assignment --> location '=' expression
 
-function-call --> identifier "(" [ arguments ] ")"
+location --> identifier | identifier '[' expression ']'
 
-declaration --> type identifier [ "=" expression ]
+expression --> conjunction | conjunction '||' expression
 
-block --> "{" statement+ "}"
+conjunction --> equality | equality '&&' conjunction
 
-expression --> term { additive-operator term }
+equality --> relation | relation '==' equality | relation '!=' equality
 
-term --> factor { multiplicative-operator factor }
+relation --> addition | addition '<' relation | addition '<=' relation | addition '>' relation | addition '>=' relation
 
-factor --> literal | identifier | "(" expression ")" | unary-operator factor
+addition --> multiplication | multiplication '+' addition | multiplication '-' addition
 
-arguments --> expression { "," expression }
+multiplication --> unary | unary '*' multiplication | unary '/' multiplication | unary '%' multiplication
 
-literal --> number | string | boolean
+unary --> '-' unary | '!' unary | primary
 
-identifier --> letter { letter | digit | "_" }
+primary --> integer-literal | string-literal | true | false | identifier | '(' expression ')' | array-access
 
-number --> digit+
+array-access --> identifier '[' expression ']'
 
-string --> "\"" character* "\""
+function-call --> identifier '(' argument-list ')'
 
-boolean --> "true" | "false"
+argument-list --> expression | expression ',' argument-list
 
-letter --> "a" | "b" | ... | "z" | "A" | "B" | ... | "Z"
+return-statement --> 'return' expression ';'
 
-digit --> "0" | "1" | ... | "9"
+if-statement --> 'if' '(' expression ')' statement | 'if' '(' expression ')' statement 'else' statement
 
-additive-operator --> "+" | "-"
+while-statement --> 'while' '(' expression ')' statement
 
-multiplicative-operator --> "*" | "/"
+do-while-statement --> 'do' statement 'while' '(' expression ')' ';'
 
-unary-operator --> "+" | "-" | "!" 
+for-statement --> 'for' '(' for-init ';' for-condition ';' for-update ')' statement
 
-type --> "int" | "float" | "char" | "bool"
+for-init --> expression | variable-declaration
+
+for-condition --> expression
+
+for-update --> expression
+
+function-declaration --> type identifier '(' parameter-list ')' block
+
+parameter-list --> parameter | parameter ',' parameter-list
+
+parameter --> type identifier
+
+array-initialization --> type identifier '[' integer-constant ']' '=' '{' expression-list '}'
+
+expression-list --> expression | expression ',' expression-list
+
+comment --> line-comment | block-comment
+
+line-comment --> '@' text '\n'
+
+block-comment --> '/*' text '*/'
+
+type --> 'int' | 'boolean' | 'string' | 'char' | 'float'
+
+identifier --> letter (letter | digit | '_')*
+
+integer-literal --> digit+
+
+string-literal --> '"' character* '"'
+
+character --> letter | digit | symbol
+
+letter --> 'a' ... 'z' | 'A' ... 'Z'
+
+digit --> '0' ... '9'
+
+symbol --> ' ' | '!' | '"' | '#' | '$' | '%' | '&' | '\'' | '(' | ')' | '*' | '+' | ',' | '-' | '.' | '/' | ':' | ';' | '<' | '=' | '>' | '?' | '@' | '[' | '\\' | ']' | '^' | '_' | '`' | '{' | '|' | '}' | '~'
+
+text --> (letter | digit | symbol | ' ')*
+
+main --> block
